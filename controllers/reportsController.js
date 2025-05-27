@@ -4,8 +4,9 @@ module.exports.generateModulesPerformance = function(req, res) {
     const code = req.query.code;
 
     // Generate attendance using query parameters
-    return reportsModel.generateModulesPerformance( code )
+    return reportsModel.generateModulesPerformance(code)
         .then(function(modulePerformance) {
+            console.log("module performance : " + modulePerformance)
             return res.json({ performance: modulePerformance })
         } )
         .catch(function(error){

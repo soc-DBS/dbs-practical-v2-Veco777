@@ -1,15 +1,47 @@
 const { query } = require('../database');
 const { EMPTY_RESULT_ERROR, SQL_ERROR_CODE, UNIQUE_VIOLATION_ERROR } = require('../errors');
-
+/* 
 module.exports.create = function create(code, name, credit) {
-    const sql = `INSERT INTO module (mod_code, mod_name, credit_unit) VALUES ($1, $2, $3)`;
-    return query(sql, [code, name, credit]).catch(function (error) {
+    const sql = `CALL create_module($1, $2, $3)`;
+    return query(sql, [code, name, credit])
+        .then(function(result) {
+            console.log("Modules created successfully")
+            console.log(result);
+        })
+        .catch(function (error) {
         if (error.code === SQL_ERROR_CODE.UNIQUE_VIOLATION) {
             throw new UNIQUE_VIOLATION_ERROR(`Module ${code} already exists`);
         }
         throw error;
     });
-};
+}; */
+
+module.exports.create = function create(code, name, credit) {     const sql = 'CALL create_module($1, $2, $3)';     return query(sql, [code, name, credit]) 
+        .then(function (result) { 
+            console.log('Module created successfully');         }) 
+        .catch(function (error) {             if (error.code === SQL_ERROR_CODE.UNIQUE_VIOLATION) {                 throw new UNIQUE_VIOLATION_ERROR(`Module ${code} already exists! Cannot create duplicate.`); 
+            }             throw error; 
+        }); 
+}; 
+ 
+
+
+/* module.exports.updateByCode = function updateByCode(mod_code, credit) {
+    const sql = ``;
+    return query(sql, [mod_code, credit]) 
+        .then(function(result) {
+            console.log(result);
+        })
+        .catch(function(err) {
+            if (error.code === SQL_ERROR_CODE.UNIQUE_VIOLATION) {
+            throw new UNIQUE_VIOLATION_ERROR(`Module ${code} already exists`);
+        }
+        throw error;
+        })
+
+}
+ */
+
 
 module.exports.retrieveByCode = function retrieveByCode(code) {
     const sql = `SELECT * FROM module WHERE mod_code = $1`;
@@ -30,7 +62,7 @@ module.exports.deleteByCode = function deleteByCode(code) {
     // Note:
     // If using raw sql: Can use result.rowCount to check the number of rows affected
     // But if using function/stored procedure, result.rowCount will always return null
-    const sql = `DELETE FROM module WHERE mod_code = $1`;
+    const sql = `CALL delete_module($1)`;
     return query(sql, [code]).then(function (result) {
         const rows = result.rowCount;
 
@@ -46,10 +78,9 @@ module.exports.updateByCode = function updateByCode(code, credit) {
     // Note:
     // If using raw sql: Can use result.rowCount to check the number of rows affected
     // But if using function/stored procedure, result.rowCount will always return null
-    const sql = `UPDATE module SET credit_unit = $1 WHERE mod_code = $2`;
+    const sql = `CALL update_module($1, $2) `;
     return query(sql, [credit, code]).then(function (result) {
         const rows = result.rowCount;
-
         if (rows === 0) {
             // Note: result.rowCount returns the number of rows processed instead of returned
             // Read more: https://node-postgres.com/apis/result#resultrowcount-int--null

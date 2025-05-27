@@ -1,10 +1,11 @@
 const { query } = require('../database');
 
 module.exports.generateModulesPerformance = function generateModulesPerformance() {
-    const sql = 'SELECT * FROM get_modules_performance()';
+    const sql = 'SELECT * FROM get_modules_performance() AS result';
     return query(sql)
         .then(function (result) {
             const rows = result.rows;
+            console.log("Rows : " + rows)
             return rows;
         })
         .catch(function (error) {
@@ -17,6 +18,7 @@ module.exports.calculateStudentsGPA = function calculateStudentsGPA() {
     return query(sql)
         .then(function (result) {
             console.log('Calculating students GPA');
+            console.log(result)
         })
         .catch(function (error) {
             throw error;
